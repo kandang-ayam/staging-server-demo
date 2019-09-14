@@ -11,3 +11,13 @@ services:
       - "8080:8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+
+  app_staging:
+    image: 108kb/my-awesome-project:staging
+    labels:
+      - "traefik.port=3000"
+      - "traefik.frontend.rule=Host:app-staging.evilfactory.id"
+    environment:
+      - HOST=0.0.0.0
+      - PORT=3000
+      - IS_STAGING=true
