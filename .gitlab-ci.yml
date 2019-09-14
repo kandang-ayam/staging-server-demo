@@ -4,7 +4,7 @@ services:
   - docker:dind
 
 variables:
-  STAGING_URL: https://staging-app.evilfactory.id
+  STAGING_URL: https://app-staging.evilfactory.id
   PRODUCTION_URL: https://app.evilfactory.id
 
 before_script:
@@ -40,13 +40,13 @@ staging:
 
 deploy_staging:
   stage: staging
+  only:
+    - canary
   script:
     - echo "TODO: Deploy to staging server"
   environment:
     name: staging
     url: $STAGING_URL
-  only:
-    - canary
 
 deploy_production:
   stage: production
