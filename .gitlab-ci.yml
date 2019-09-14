@@ -43,7 +43,11 @@ deploy_staging:
   only:
     - canary
   script:
-    - echo "TODO: Deploy to staging server"
+    - apk update && apk add sshpass openssh
+    - export IMAGE_NAME=$CI_REGISTRY_IMAGE:staging
+    - sshpass -e ssh -o StrictHostKeyChecking=no $SSH_SERVER docker pull $IMAGE_NAME
+    - sshpass -e ssh -o StrictHostKeyChecking=no $SSH_SERVER docker-compose up -d $STAGING_APP_NAME
+    - echo "> Done. Check it at $STAGING_URL"
   environment:
     name: staging
     url: $STAGING_URL
