@@ -1,0 +1,61 @@
+image: docker:stable
+
+services:
+  - docker:dind
+
+variables:
+  STAGING_URL: https://staging-app.evilfactory.id
+  PRODUCTION_URL: https://app.evilfactory.id
+
+before_script:
+  - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+
+stages:
+  - build
+  - test
+  - release
+  - staging
+  - production
+
+build:
+  stage: build
+  script:
+    - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA .
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+
+test:
+  stage: test
+  script:
+    - docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - docker run $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA node -e "console.log('ok')"
+
+staging:
+  stage: release
+  only:
+    - canary
+  script:
+    - docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA $CI_REGISTRY_IMAGE:staging
+    - docker push $CI_REGISTRY_IMAGE:staging
+
+deploy_staging:
+  stage: staging
+  script:
+    - echo "TODO: Deploy to staging server"
+  environment:
+    name: staging
+    url: $STAGING_URL
+  only:
+    - canary
+
+deploy_production:
+  stage: production
+  script:
+    - echo "TODO: Deploy to production server"
+  environment:
+    name: production
+    url: $PRODUCTION_URL
+  when: manual
+  only:
+    - master
+
