@@ -54,12 +54,18 @@ deploy_staging:
 
 deploy_production:
   stage: production
+  only:
+    - master
   script:
-    - echo "TODO: Deploy to production server"
+    - apk update && apk add sshpass openssh
+    - export IMAGE_NAME=$CI_REGISTRY_IMAGE:stable
+    - docker pull $CI_REGISTRY_IMAGE:staging
+    - docker tag $CI_REGISTRY_IMAGE:staging $CI_REGISTRY_IMAGE:stable
+    - docker push $CI_REGISTRY_IMAGE:stable
+    - sshpass -e ssh -o StrictHostKeyChecking=no $SSH_SERVER docker pull $IMAGE_NAME
+    - sshpass -e ssh -o StrictHostKeyChecking=no $SSH_SERVER docker-compose up -d $PRODUCTION_APP_NAME
+    - echo "> Done. Check it at $PRODUCTION_URL"
   environment:
     name: production
     url: $PRODUCTION_URL
   when: manual
-  only:
-    - master
-
