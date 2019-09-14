@@ -9,7 +9,7 @@ fastify.get('/healthcheck', (request, reply) => {
 fastify.get('/', (request, reply) => {
   reply
     .type('text/html')
-    .send(`<h2>Hello worls</h2>${IS_STAGING ? '(staging)' : ''}`)
+    .send(`<h2>Hello world</h2>${IS_STAGING ? '(staging)' : ''}`)
 })
 
 fastify.listen(process.env.PORT, process.env.HOST)
