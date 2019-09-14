@@ -13,7 +13,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 
   app_staging:
-    image: 108kb/my-awesome-project:staging
+    image: registry.gitlab.com/108kb/my-awesome-project:staging
     labels:
       - "traefik.port=3000"
       - "traefik.frontend.rule=Host:app-staging.evilfactory.id"
@@ -21,3 +21,12 @@ services:
       - HOST=0.0.0.0
       - PORT=3000
       - IS_STAGING=true
+
+  app:
+    image: registry.gitlab.com/108kb/my-awesome-project:stable
+    labels:
+      - "traefik.port=3000"
+      - "traefik.frontend.rule=Host:app.evilfactory.id"
+    environment:
+      - HOST=0.0.0.0
+      - PORT=3000
