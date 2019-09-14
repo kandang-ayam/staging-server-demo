@@ -4,6 +4,8 @@ services:
   - docker:dind
 
 variables:
+  STAGING_APP_NAME: app_staging
+  PRODUCTION_APP_NAME: app
   STAGING_URL: https://app-staging.evilfactory.id
   PRODUCTION_URL: https://app.evilfactory.id
 
